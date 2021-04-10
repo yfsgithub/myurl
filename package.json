@@ -1,0 +1,25 @@
+{
+  "name": "myurl",
+  "version": "1.0.0",
+  "description": "设计类似TinyURL的URL缩短服务",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yfsgithub/myurl.git"
+  },
+  "keywords": [
+    "tinyurl"
+  ],
+  "author": "liufl",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yfsgithub/myurl/issues"
+  },
+  "homepage": "https://github.com/yfsgithub/myurl#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
