@@ -2,41 +2,104 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
-    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-    <div style="margin: 0px 80px;">
-        <form>
-            <div class="form-group">
-                <label for="address">long url:</label>
-                <input type="input" class="form-control" id="address">
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+  <div style="margin: 0px 80px;">
+    <form>
+      <div class="form-group">
+        <label for="address">long url:</label>
+        <input type="input" class="form-control" id="address">
+      </div>
+      <button type="submit" class="btn btn-primary" onclick="saveUrl()">Submit</button>
+    </form>
 
-        <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>tinyCode</th>
-                <th>tinyUrl</th>
-                <th>operate</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>http://localhost:3000/1</td>
-                <td><button type="button" class="btn btn-outline-danger">delete</button></td>
-              </tr>
-            </tbody>
-        </table>
-    </div>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>tinyCode</th>
+          <th>tinyUrl</th>
+          <th>operate</th>
+        </tr>
+      </thead>
+      <tbody id= "mytable">
+        <!-- <tr>
+          <td>1</td>
+          <td>http://localhost:3000/1</td>
+          <td><button type="button" class="btn btn-outline-danger">delete</button></td>
+        </tr> -->
+      </tbody>
+    </table>
+  </div>
 
 </body>
+<script>
+  function saveUrl() {
+    $.ajax({
+      url: '/tinyurl',
+      data: {
+        originalUrl: $('#address').val()
+      },
+      type: 'POST',
+      success: function (res, textStatus, jqXHR) {
+        alert('success');
+        getList();
+      },
+      error: function (errorxml, errormsg) {
+        alert('error');
+      }
+    });
+  }
+
+  function getList() {
+    $.ajax({
+      url: '/getList',
+      type: 'GET',
+      success: function (res, textStatus, jqXHR) {
+        console.log(res);
+        $("#mytable").empty();
+        var h = "";
+        for(i = 0; i < res.length; i++){
+          h += '<tr>'
+            +'<td>' + res[i].tinyCode + '</td>'
+            +'<td><a href="'+res[i].tinyUrl+'" target="_blank">' + res[i].tinyUrl + '</a></td>'
+            + '<td><button type="button" class="btn btn-outline-danger" onclick="del(\''+ res[i].tinyCode +'\')">delete</button></td>'
+          +'</tr>';
+        }
+        $("#mytable").append(h);
+      },
+      error: function (errorxml, errormsg) {
+        alert('error');
+      }
+    });
+  }
+
+  function del(tinyCode) {
+    $.ajax({
+      url: '/tinyurl/' + tinyCode,
+      data: {
+        originalUrl: $('#address').val()
+      },
+      type: 'DELETE',
+      success: function (res, textStatus, jqXHR) {
+        alert('success');
+        getList();
+      },
+      error: function (errorxml, errormsg) {
+        alert('error');
+      }
+    });
+  }
+
+  $(function () {
+    getList();
+  })
+
+</script>
 
 </html>

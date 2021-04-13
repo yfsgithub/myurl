@@ -1,4 +1,6 @@
 const { Sequelize } = require('sequelize');
+const tinyCode = require('./tinycode');
+const cfg = require('./config')
 
 function db() {
     var self = this;
@@ -17,22 +19,55 @@ function db() {
         }
     }
 
-    this.saveDb = function (data) {
+    this.saveDb = async function (data) {
+        let arr = await this.table.findAll({
+            order: [
+                ['id', 'DESC'],
+            ],
+            limit: 1
+        });
+        let id = 1;
+        if(arr.length > 0) id = arr[0].id + 1;
+        console.log('id: => ' + id);
+        let code = tinyCode.code10to62(id.toString());
 
+        const tObj = await this.table.create({
+            id:id, 
+            tinyCode: code, 
+            tinyUrl: `http://${cfg.urlHost}/c/${code}`,
+            originalUrl: data.originalUrl
+        });
+        console.log("DB ID: ", tObj.id);
+        return tObj;
     }
 
-    this.getList = function () {
-        return this.table.findAll({
+    this.getList = async function () {
+        let a = await this.table.findAll({
             order: [
-                // Will escape title and validate DESC against a list of valid direction parameters
                 ['updatedAt', 'DESC'],
             ]
         });
+        return  a;
     }
 
-    this.deleteByTinyCode = function () {
-
+    this.deleteByTinyCode = async function (params) {
+        let a= await this.table.destroy({
+            where: {
+                tinyCode: params.tinyCode
+            }
+        });
+        return a;
     }
+
+    this.getUrl = async function(params) {
+        let a = await this.table.findOne({
+            where: {
+                tinyCode: params.tinyCode
+            }
+        })
+        return a;
+    }
+
     // 创建表
     function createTinyUrlTable(sequelize) {
         let tinyUrl = sequelize.define('tinyurl', {

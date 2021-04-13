@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/yfsgithub/myurl#readme",
   "dependencies": {
+    "any-base": "^1.1.0",
     "express": "^4.17.1",
     "sequelize": "^6.6.2",
     "sqlite3": "^5.0.2"

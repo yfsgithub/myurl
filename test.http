@@ -1,1 +1,11 @@
-http://localhost:3000
+http://localhost:3000/getList
+### 保存原始地址
+POST http://localhost:3000/tinyurl
+Content-Type: application/json
+
+{
+    "originalUrl": "http://baidu.com"
+}
+
+### 删除
+DELETE http://localhost:3000/tinyurl/C
